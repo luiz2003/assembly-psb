@@ -2,11 +2,14 @@
 
 section .bss
 
-string resb 66
+string resb 62
 stringLen equ $- string 
 
-sub_string resb 57
-sub_stringLen equ 58
+sub_string resb 54
+sub_stringLen equ $- sub_string
+
+reversed_substr resb 54
+
 
 section .text
 global CMAIN
@@ -18,6 +21,8 @@ CMAIN:
     mov eax, stringLen
     
     GET_STRING string, eax
+    PRINT_STRING string
+    NEWLINE
     
    ;Questão 1
     call getSubstring
@@ -34,7 +39,7 @@ getSubstring:
     xor ecx, ecx
     mov ecx, sub_stringLen
     
-    mov esi, string + 8 ;point source to desired location 
+    mov esi, string + 7 ;point source to desired location 
     mov edi, sub_string ;point destination to variable 
     
     cld ;so it moves foward in both strings

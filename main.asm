@@ -2,13 +2,13 @@
 
 section .bss
 
-string resb 66
+string resb 62
 stringLen equ $- string 
 
-sub_string resb 57
+sub_string resb 54
 sub_stringLen equ $- sub_string
 
-reversed_substr resb 58
+reversed_substr resb 54
 
 
 section .text
@@ -21,12 +21,11 @@ CMAIN:
     mov eax, stringLen
     
     GET_STRING string, eax
+    PRINT_STRING string
+    NEWLINE
     
    ;Questão 1
     call getSubstring
-    
-   ;Questão 3
-    call reverseSubstring 
     
     ret
     
@@ -40,7 +39,7 @@ getSubstring:
     xor ecx, ecx
     mov ecx, sub_stringLen
     
-    mov esi, string + 8 ;point source to desired location 
+    mov esi, string + 7 ;point source to desired location 
     mov edi, sub_string ;point destination to variable 
     
     cld ;so it moves foward in both strings
@@ -48,38 +47,6 @@ getSubstring:
     rep movsb ;copy bytes from one string to another
                 
     PRINT_STRING sub_string
-    NEWLINE
-    
-    ret
-;================================================
-
-;--------------
-;| Questão 3  |
-;--------------
-;================================================
-reverseSubstring:
-    ;set number of interations as the lenght of
-    ;the substring
-    xor ecx, ecx
-    mov ecx, sub_stringLen
-    
-    ;point source to the end of sub_string
-    ;and destiny to the start of reversed_substr
-    mov esi, sub_string + 56
-    mov edi, reversed_substr  
-    
-movbyte:
-    std ;set direction flag to move around sub_string backwards
-    
-    lodsb
-    
-    cld; so we move foward in reversed_substr 
-    
-    stosb
-    
-    loop movbyte
-    
-    PRINT_STRING reversed_substr
     NEWLINE
     
     ret

@@ -1,5 +1,9 @@
 %include "io.inc"
 
+section .data
+    separator1 db " - ",0
+    separator2 db ", ",0
+
 section .bss
 
 string resb 62
@@ -10,6 +14,7 @@ sub_stringLen equ $- sub_string
 
 reversed_substr resb 55
 
+char_values resb 47
 
 
 section .text
@@ -22,14 +27,15 @@ CMAIN:
     mov eax, stringLen
     
     GET_STRING string, eax
-    PRINT_STRING string
-    NEWLINE
     
    ;Questão 1
     call getSubstring
     
    ;Questão 3
     call reverseSubstring 
+    
+   ;Questão 6
+    call characterPosition
     
     ret
     
@@ -45,7 +51,8 @@ getSubstring:
     
     mov esi, string + 7 ;point source to desired location 
     mov edi, sub_string ;point destination to variable 
-    
+        cmp al, 97
+
     cld ;so it moves foward in both strings
     
     rep movsb ;copy bytes from one string to another
@@ -76,6 +83,57 @@ swap:
     loop swap ; repeats swap process
     
     PRINT_STRING reversed_substr
+    NEWLINE
+
+    ret
+;================================================
+
+;--------------    PRINT_STRING string
+    NEWLINE
+;| Questão 6  |
+;--------------
+;================================================
+characterPosition:
+    mov ecx, sub_stringLen ;set iteration counter
+    mov esi, sub_string ; pont source to sub_string
+    mov edi, char_values ; point destiny to char_value to store positions
+    
+analyseByte:
+    cmp ecx, 0  ;
+    je exit     ;loop logic
+    dec ecx     ;
+    
+    cld     ; so we move foward in sub_string
+    lodsb   ; load current byte into al
+    
+    cmp al, 65      ; Checks if it's a letter, if not
+    jng analyseByte ; go to next character
+    
+    cmp al, 97      ;Checks if it's lowercase, if it is
+    jge lowerCase   ;go to lowercase logic, else do uppercase logic
+    
+    PRINT_CHAR al 
+    PRINT_STRING separator1 
+    sub al, 64;calculate position of uppercase chars
+    PRINT_DEC 1, al
+    PRINT_STRING separator2 
+    
+    
+    stosb ;store position in array
+    
+    jmp analyseByte
+    
+lowerCase:
+    PRINT_CHAR al
+    PRINT_STRING separator1
+    sub al, 96 ; calculates position of lowercase chars
+    PRINT_DEC 1, al
+    PRINT_STRING separator2
+    
+    stosb ;store position in array
+    jmp analyseByte
+
+exit:    
     NEWLINE
     
     ret

@@ -32,17 +32,13 @@ CMAIN:
 getSubstring:
     xor ecx, ecx
     mov ecx, sub_stringLen
-    mov eax, 0
- 
-
-fillSubstring:
-    mov ebx, [string + 8 + eax]
-    mov [sub_string + eax], ebx
+  
+    mov esi, string + 8
+    mov edi, sub_string 
+    cld
     
-    inc eax
-    
-    loop fillSubstring
-    
+    rep movsb
+                
     PRINT_STRING sub_string
     NEWLINE
     

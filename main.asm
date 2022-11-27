@@ -6,7 +6,10 @@ string resb 66
 stringLen equ $- string 
 
 sub_string resb 57
-sub_stringLen equ 58
+sub_stringLen equ $- sub_string
+
+reversed_substr resb 58
+
 
 section .text
 global CMAIN
@@ -21,6 +24,9 @@ CMAIN:
     
    ;Questão 1
     call getSubstring
+    
+   ;Questão 3
+    call reverseSubstring 
     
     ret
     
@@ -40,6 +46,38 @@ getSubstring:
     rep movsb
                 
     PRINT_STRING sub_string
+    NEWLINE
+    
+    ret
+;================================================
+
+;--------------
+;| Questão 3  |
+;--------------
+;================================================
+reverseSubstring:
+    ;set number of interations as the lenght of
+    ;the substring
+    xor ecx, ecx
+    mov ecx, sub_stringLen
+    
+    ;point source to the end of sub_string
+    ;and destiny to the start of reversed_substr
+    mov esi, sub_string + 56
+    mov edi, reversed_substr  
+    
+movbyte:
+    std ;set direction flag to move around sub_string backwards
+    
+    lodsb
+    
+    cld; so we move foward in reversed_substr 
+    
+    stosb
+    
+    loop movbyte
+    
+    PRINT_STRING reversed_substr
     NEWLINE
     
     ret

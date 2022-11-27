@@ -68,11 +68,10 @@ reverseSubstring:
                                  ; the end of the reversed one 
 swap:
     cld ;so after we load a byte esi points to the next position
-    lodsb ;loads the current byte of substring
-    
+    lodsb ;loads the current byte of substring to al register
     
     std ;so after we store a byte edi points to the previous position
-    stosb; stores the current byte
+    stosb; stores the current byte in al into the string variable
     
     loop swap ; repeats swap process
     

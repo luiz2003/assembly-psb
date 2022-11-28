@@ -12,7 +12,7 @@ stringLen equ $- string
 sub_string resb 55
 sub_stringLen equ $- sub_string
 
-reversed_substr resb 55
+reversed_substr resb 56
 
 char_values resb 47
 
@@ -34,6 +34,7 @@ CMAIN:
    ;Questão 3
     call reverseSubstring 
     
+    
    ;Questão 6
     call characterPosition
     
@@ -41,7 +42,7 @@ CMAIN:
     
 
 ;================================================
-
+;--------------
 ;| Questão 1  |
 ;--------------
 ;================================================
@@ -53,7 +54,7 @@ getSubstring:
     
     mov esi, string + 7 ;point source to desired location 
     mov edi, sub_string ;point destination to variable 
-        cmp al, 97
+
 
     cld ;so it moves foward in both strings
     
@@ -70,10 +71,10 @@ getSubstring:
 ;--------------
 ;================================================
 reverseSubstring:
-    mov ecx, sub_stringLen ;set iteration count
+    mov ecx, 55 ;set iteration count
     
     mov esi, sub_string ; point source to the start of the substring
-    mov edi, reversed_substr + 53; point destination to
+    mov edi, reversed_substr + 55; point destination to
                                  ; the end of the reversed one 
 swap:
     cld ;so after we load a byte esi points to the next position
@@ -84,7 +85,14 @@ swap:
     
     loop swap ; repeats swap process
     
-    PRINT_STRING reversed_substr
+    mov ecx, 56
+    mov edi, reversed_substr
+    cld
+    
+print:
+    lodsb
+    PRINT_CHAR al
+    loop print
     NEWLINE
 
     ret

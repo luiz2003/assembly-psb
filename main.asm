@@ -3,7 +3,7 @@
 section .data
     separator1 db " - ",0
     separator2 db ", ",0
-
+    counter db 0
 section .bss
 
 string resb 62
@@ -15,6 +15,10 @@ sub_stringLen equ $- sub_string
 reversed_substr resb 56
 
 char_values resb 47
+
+concatenated_substr resb 54
+questao_cinco resb 56
+
 
 
 section .text
@@ -34,6 +38,11 @@ CMAIN:
    ;Questão 3
     call reverseSubstring 
     
+   ;Questão 4
+   call concatenate
+   
+   ;Questão 5
+   call questaocinco
     
    ;Questão 6
     call characterPosition
@@ -98,6 +107,66 @@ print:
     ret
 ;================================================
 
+
+;--------------    
+;| Questão 4  |
+;--------------
+;================================================
+concatenate:   
+    mov ecx, 54
+    mov esi, sub_string
+    mov edi, concatenated_substr
+    cld
+comparation:
+    lodsb
+    cmp al, 32
+    jne notspace
+    jmp space
+notspace:
+    stosb
+space:
+    loop comparation
+
+    PRINT_STRING concatenated_substr
+    NEWLINE
+    
+    ret
+;================================================
+
+
+;--------------    
+;| Questão 5  |
+;--------------
+;================================================
+questaocinco:
+    mov eax,0
+    mov ebx, 6
+    mov ecx, 56
+    mov esi, sub_string
+    mov edi, questao_cinco
+    cld
+evaluation:
+    lodsb
+    cmp al, 32
+    je ispace
+    xor edx,edx
+    div ebx
+    inc eax
+    cmp edx, 2
+    jng capitalize
+    jmp ispace
+capitalize:
+    sub al, 32
+
+ispace:
+    stosb
+    loop evaluation
+
+    PRINT_STRING questao_cinco
+    NEWLINE
+    ret
+    
+    
 ;--------------    
 ;| Questão 6  |
 ;--------------

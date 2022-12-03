@@ -4,7 +4,7 @@ section .data
     separator1 db " - ",0
     separator2 db ", ",0
     counter db 0
-    mod db 6
+    
 section .bss
 
 string resb 62
@@ -19,7 +19,6 @@ char_values resb 47
 
 concatenated_substr resb 54
 questao_cinco resb 56
-
 
 
 section .text
@@ -78,7 +77,6 @@ getSubstring:
     
     ret
 ;================================================
-
 ;--------------
 ;| Questão 2  |
 ;--------------
@@ -132,7 +130,6 @@ exitLoop:
     
     ret
 ;================================================
-    
 ;--------------
 ;| Questão 3  |
 ;--------------
@@ -164,25 +161,26 @@ print:
 
     ret
 ;================================================
-
-
 ;--------------    
 ;| Questão 4  |
 ;--------------
 ;================================================
 concatenate:   
-    mov ecx, 54
-    mov esi, sub_string
-    mov edi, concatenated_substr
-    cld
+    mov ecx, 54 ;set iteration count
+    mov esi, sub_string ;point source to sub_string
+    mov edi, concatenated_substr ;point destination to cocatenated_substr
+    cld ;so we move forwad in both strings
+    
 comparation:
-    lodsb
-    cmp al, 32
+    lodsb; load current byte
+    cmp al, 32 ;verifies if current byte is a string
     jne notspace
-    jmp space
+    jmp next ;if it is a space, don't store it
+    
 notspace:
-    stosb
-space:
+    stosb ;store current letter
+    
+next:
     loop comparation
 
     PRINT_STRING concatenated_substr
@@ -190,61 +188,51 @@ space:
     
     ret
 ;================================================
-
-
 ;--------------    
 ;| Questão 5  |
 ;--------------
 ;================================================
 questaocinco:
-    mov ebx, 0
-    mov ecx, 0
-    mov esi, sub_string
-    mov edi, questao_cinco
-    cld
+    mov ebx, 0 ;ebx will be the letter position counter
+    mov ecx, 0 ;ecx will be the loop counter
+    mov esi, sub_string ;point source to sub_string
+    mov edi, questao_cinco ;point destination to questao_cinco
+    cld ;so we move forwad in both strings
     
 evaluation:
-    cmp ecx, 54
-    je return
+    cmp ecx, 54 ; loop logic
+    je return   ;
     
-    lodsb
-    dec esi
+    lodsb ; load current byte from sub_string
     
-    cmp al, 32
-    je continue
+    cmp al, 32  ; verify if current byte is a space
+    je continue ; if it is go to next byte
     
-    cmp ebx, 2
-    jge manage_counter
+    cmp ebx, 2 ;verifies if we should capitalize (first two steps of cycle)
+    jge manage_counter ;if we don't execute counter logic
     
-    inc ebx
-    lodsb
-    dec esi
-    sub al, 32
+    inc ebx ; sinalizes we are in the next step of cycle
     
-    jmp continue
+    sub al, 32 ;capitalizes byte
     
-reset_counter:
-    mov ebx, 0
-    jmp continue
+    jmp continue ; go to next byte
 
 manage_counter:
-    inc ebx
-    cmp ebx, 5
+    inc ebx ; go forwad in cycle
+    cmp ebx, 5 ;verifyes if we got over the end of cycle
     jne continue
-    mov ebx, 0
+    mov ebx, 0 ; if we got over the end, resets cycle
     
 continue:
-    inc esi
-    inc ecx
-    stosb
+    inc ecx ;loop logic
+    stosb ;store current byte
     jmp evaluation
 
 return: 
     PRINT_STRING questao_cinco
     NEWLINE
     ret
-    
-    
+;================================================
 ;--------------    
 ;| Questão 6  |
 ;--------------

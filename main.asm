@@ -4,6 +4,7 @@ section .data
     separator1 db " - ",0
     separator2 db ", ",0
     counter db 0
+    mod db 6
 section .bss
 
 string resb 62
@@ -197,28 +198,38 @@ space:
 ;================================================
 questaocinco:
     mov eax,0
-    mov ebx, 6
-    mov ecx, 56
+    mov ecx, 0
     mov esi, sub_string
     mov edi, questao_cinco
     cld
+    
 evaluation:
+    cmp ecx, 54
+    je return
+    
     lodsb
+    dec esi
+    
     cmp al, 32
-    je ispace
+    je continue
+    
     xor edx,edx
-    div ebx
-    inc eax
+    mov eax, ecx
+    div byte[mod]
     cmp edx, 2
-    jng capitalize
-    jmp ispace
-capitalize:
+    jge continue
+    
+    lodsb
+    dec esi
     sub al, 32
 
-ispace:
+continue:
+    inc esi
+    inc ecx
     stosb
-    loop evaluation
+    jmp evaluation
 
+return: 
     PRINT_STRING questao_cinco
     NEWLINE
     ret

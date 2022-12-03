@@ -197,7 +197,7 @@ space:
 ;--------------
 ;================================================
 questaocinco:
-    mov eax,0
+    mov ebx, 0
     mov ecx, 0
     mov esi, sub_string
     mov edi, questao_cinco
@@ -213,16 +213,26 @@ evaluation:
     cmp al, 32
     je continue
     
-    xor edx,edx
-    mov eax, ecx
-    div byte[mod]
-    cmp edx, 2
-    jge continue
+    cmp ebx, 2
+    jge manage_counter
     
+    inc ebx
     lodsb
     dec esi
     sub al, 32
+    
+    jmp continue
+    
+reset_counter:
+    mov ebx, 0
+    jmp continue
 
+manage_counter:
+    inc ebx
+    cmp ebx, 5
+    jne continue
+    mov ebx, 0
+    
 continue:
     inc esi
     inc ecx

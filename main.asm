@@ -35,6 +35,9 @@ CMAIN:
    ;Questão 1
     call getSubstring
     
+   ;Questão 2
+    call countma
+    
    ;Questão 3
     call reverseSubstring 
     

@@ -76,6 +76,60 @@ getSubstring:
 ;================================================
 
 ;--------------
+;| Questão 2  |
+;--------------
+;================================================
+countma:
+    xor ecx, ecx ;reset ecx value
+    xor edx, edx ;reset edx value
+    xor ebx, ebx ;reset ebx value
+    
+    ;we´re using bl to store the quantity of m's and dl to store the quantity of a's
+    
+    mov ecx, sub_stringLen ;set counter to sub_stringLen
+    mov esi, sub_string ;points to the start of the substring
+
+searchCharacter:
+    cmp ecx, 0 ;is ecx == 0?
+    je exitLoop ;if ecx == 0, exit loop
+    
+    dec ecx ;advance loop counter
+        
+    cld
+    lodsb ;load current byte into al
+    
+    cmp al, 97 ;if current byte == 97 (ascii value for 'a')
+    je incA
+    
+    cmp al, 198 ;if current byte == 198 (ascii value for 'ã'
+    je incA
+    
+    cmp al, 131 ;if current byte == 131 (ascii value for 'â')
+    je incA
+    
+    cmp al, 109 ;if current byte == 109 (ascii value for 'm')
+    je incM
+    
+    jmp searchCharacter ;advance loop
+
+incM:
+    inc bl
+    jmp searchCharacter
+    
+incA:
+    inc dl
+    jmp searchCharacter
+    
+exitLoop:
+    PRINT_DEC 1, bl
+    NEWLINE
+    PRINT_DEC 1, dl
+    NEWLINE
+    
+    ret
+;================================================
+    
+;--------------
 ;| Questão 3  |
 ;--------------
 ;================================================

@@ -1,0 +1,219 @@
+%include "io.inc"
+
+section .data
+    separator1 db " - ",0
+    separator2 db ", ",0
+    
+    counter dd 46
+
+section .bss
+
+string resb 62
+stringLen equ $- string 
+
+sub_string resb 55
+sub_stringLen equ $- sub_string
+
+reversed_substr resb 56
+
+char_values resb 47
+sort_char_values resb 47
+
+
+section .text
+global CMAIN
+
+CMAIN:
+    mov ebp, esp; for correct debugging
+    ;write your code here
+    xor eax, eax
+    mov eax, stringLen
+    
+    GET_STRING string, eax
+    
+    call getSubstring
+
+   ;Questão 6
+    call characterPosition
+    
+   ;Questão 7
+    call calculaMedia
+    call ordena
+    
+    ret
+
+;================================================
+;--------------
+;| Questão 1  |
+;--------------
+;================================================
+
+getSubstring:
+    ;set numbers of rep iterations
+    xor ecx, ecx
+    mov ecx, sub_stringLen
+    
+    mov esi, string + 7 ;point source to desired location 
+    mov edi, sub_string ;point destination to variable 
+
+
+    cld ;so it moves foward in both strings
+    
+    rep movsb ;copy bytes from one string to another
+                
+    PRINT_STRING sub_string
+    NEWLINE
+    
+    ret
+;================================================
+
+;--------------    
+;| Questão 6  |
+;--------------
+;================================================
+characterPosition:
+    mov ecx, sub_stringLen ;set iteration counter
+    mov esi, sub_string ; pont source to sub_string
+    mov edi, char_values ; point destiny to char_value to store positions
+    
+analyseByte:
+    cmp ecx, 0  ;
+    je exit     ;loop logic
+    dec ecx     ;
+    
+    cld     ; so we move forward in sub_string
+    lodsb   ; load current byte into al
+    
+    cmp al, 65      ; Checks if it's a letter, if not
+    jng analyseByte ; go to next character
+    
+    cmp al, 97      ;Checks if it's lowercase, if it is
+    jge lowerCase   ;go to lowercase logic, else do uppercase logic
+    
+    PRINT_CHAR al 
+    PRINT_STRING separator1 
+    sub al, 64;calculate position of uppercase chars
+    PRINT_DEC 1, al
+    PRINT_STRING separator2 
+    
+    
+    stosb ;store position in array
+    
+    jmp analyseByte
+    
+lowerCase:
+    PRINT_CHAR al
+    PRINT_STRING separator1
+    sub al, 96 ; calculates position of lowercase chars
+    PRINT_DEC 1, al
+    PRINT_STRING separator2
+    
+    stosb ;store position in array
+    jmp analyseByte
+
+exit:    
+    NEWLINE
+    
+    ret
+;================================================
+
+;--------------    
+;| Questão 7  |
+;--------------
+;================================================
+
+calculaMedia:
+    xor ecx, ecx ;reset ecx value
+    xor ebx, ebx ;reset ebx value
+    xor edx, edx ;reset edx value
+    
+    ;we are going to use ebx to store the total sum inside the loop
+    
+    mov ecx, 47 ;set counter to char_values's length
+    mov esi, char_values
+    
+startLoop:
+    cmp cx, 0
+    je outOfLoop
+    dec ecx 
+    
+    cld ;clear direction flag
+    lodsb ;load current byte (of char_values) to eax   
+    
+    add ebx, eax
+    
+    jmp startLoop ;advance loop
+    
+outOfLoop:
+    xor edx, edx ;reset edx value
+
+    ;we are going to do div ebx, which means eax = eax/ebx
+    mov eax, ebx ;move total sum stored in ebx to eax
+    mov ebx, 47 ;move char_value length to ebx
+    div ebx ;divide value stored in eax by ebx and store it in eax
+    
+    ;in this case, we have total sum = 399 and char_value length = 47
+    ;this gives us approx. 8.48
+    PRINT_DEC 1, eax ;which means we should get 8 here
+    NEWLINE
+    
+    ret
+
+;================================================
+
+ordena:
+    xor eax, eax ;reset eax value
+    xor ebx, ebx ;reset ebx value
+    xor ecx, ecx ;reset ecx value
+    xor edx, edx ;reset edx value
+    
+    mov al, 46
+    mov bl, 45
+    
+loopSort:
+    dec dword [counter]
+    cmp dword [counter], 0
+    je startRead
+    
+    cmp ebx, -1
+    je endRead
+    
+    mov cl, [char_values + eax]
+    mov dl, [char_values + ebx]
+    
+    cmp cl, dl
+    jg swapPositions
+    
+    dec eax
+    dec ebx
+    
+    jmp loopSort
+
+swapPositions:
+    mov [char_values + eax], dl
+    mov [char_values + ebx], cl
+    
+    dec eax
+    dec ebx
+    
+    jmp loopSort
+
+startRead:
+    xor eax, eax
+    mov eax, 47
+
+loopRead:
+    cmp eax, 0
+    je endRead
+    dec eax
+    
+    PRINT_DEC 1, [char_values + eax]
+    PRINT_STRING separator2
+    
+    jmp loopRead
+    
+endRead:
+    NEWLINE
+    
+    ret
+

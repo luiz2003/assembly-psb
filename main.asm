@@ -3,8 +3,7 @@
 section .data
     separator1 db " - ",0
     separator2 db ", ",0
-    counter db 0
-    
+
 section .bss
 
 string resb 62
@@ -42,13 +41,16 @@ CMAIN:
     call reverseSubstring 
     
    ;Questão 4
-   call concatenate
-   
-   ;Questão 5
-   call questaocinco
+    call concatenate
     
+   ;Questão 5
+    call questaocinco
+   
    ;Questão 6
     call characterPosition
+    
+   ;Questão 7
+    call calculaMedia
     
     ret
     
@@ -77,6 +79,7 @@ getSubstring:
     
     ret
 ;================================================
+
 ;--------------
 ;| Questão 2  |
 ;--------------
@@ -86,13 +89,14 @@ countma:
     xor edx, edx ;reset edx value
     xor ebx, ebx ;reset ebx value
     
-    ;we´re using bl to store the quantity of m's and dl to store the quantity of a's
+    ;we´re using edx to store the quantity of m's and a's
+    ;specifically, we´re using bl to store m counter and dl to store a counter
     
     mov ecx, sub_stringLen ;set counter to sub_stringLen
     mov esi, sub_string ;points to the start of the substring
 
 searchCharacter:
-    cmp ecx, 0 ;is ecx == 0?
+    cmp ecx, 0 ;compare ecx 
     je exitLoop ;if ecx == 0, exit loop
     
     dec ecx ;advance loop counter
@@ -129,7 +133,8 @@ exitLoop:
     NEWLINE
     
     ret
-;================================================
+    
+
 ;--------------
 ;| Questão 3  |
 ;--------------
@@ -161,6 +166,7 @@ print:
 
     ret
 ;================================================
+
 ;--------------    
 ;| Questão 4  |
 ;--------------
@@ -233,6 +239,7 @@ return:
     NEWLINE
     ret
 ;================================================
+
 ;--------------    
 ;| Questão 6  |
 ;--------------
@@ -247,7 +254,7 @@ analyseByte:
     je exit     ;loop logic
     dec ecx     ;
     
-    cld     ; so we move foward in sub_string
+    cld     ; so we move forward in sub_string
     lodsb   ; load current byte into al
     
     cmp al, 65      ; Checks if it's a letter, if not
@@ -282,3 +289,45 @@ exit:
     
     ret
 ;================================================
+
+;--------------    
+;| Questão 7  |
+;--------------
+;================================================
+
+calculaMedia:
+    xor ecx, ecx ;reset ecx value
+    xor ebx, ebx ;reset ebx value
+    xor edx, edx ;reset edx value
+    
+    ;we are going to use ebx to store the total sum inside the loop
+    
+    mov ecx, 47 ;set counter to char_values's length
+    mov esi, char_values
+    
+startLoop:
+    cmp cx, 0
+    je outOfLoop
+    dec ecx 
+    
+    cld ;clear direction flag
+    lodsb ;load current byte (of char_values) to eax   
+    
+    add ebx, eax
+    
+    jmp startLoop ;advance loop
+    
+outOfLoop:
+    xor edx, edx ;reset edx value
+
+    ;we are going to do div ebx, which means eax = eax/ebx
+    mov eax, ebx ;move total sum stored in ebx to eax
+    mov ebx, 47 ;move char_value length to ebx
+    div ebx ;divide value stored in eax by ebx and store it in eax
+    
+    ;in this case, we have total sum = 399 and char_value length = 47
+    ;this gives us approx. 8.48
+    PRINT_DEC 1, eax ;which means we should get 8 here
+    NEWLINE
+    
+    ret

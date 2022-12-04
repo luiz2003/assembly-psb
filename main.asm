@@ -107,10 +107,6 @@ searchCharacter:
     cmp al, 97 ;if current byte == 97 (ascii value for 'a')
     je incA
     
-    cmp al, 198 ;if current byte == 198 (ascii value for 'ã'
-    je incA
-    
-    cmp al, 131 ;if current byte == 131 (ascii value for 'â')
     je incA
     
     cmp al, 109 ;if current byte == 109 (ascii value for 'm')
@@ -297,6 +293,7 @@ exit:
 
 calculaMedia:
     xor ecx, ecx ;reset ecx value
+    xor eax, eax ;reset eax value
     xor ebx, ebx ;reset ebx value
     xor edx, edx ;reset edx value
     
@@ -306,28 +303,27 @@ calculaMedia:
     mov esi, char_values
     
 startLoop:
-    cmp cx, 0
+    cmp ecx, 0
     je outOfLoop
     dec ecx 
     
     cld ;clear direction flag
     lodsb ;load current byte (of char_values) to eax   
     
-    add ebx, eax
+    add ebx, eax ;ebx += eax
     
     jmp startLoop ;advance loop
     
 outOfLoop:
-    xor edx, edx ;reset edx value
-
     ;we are going to do div ebx, which means eax = eax/ebx
     mov eax, ebx ;move total sum stored in ebx to eax
     mov ebx, 47 ;move char_value length to ebx
     div ebx ;divide value stored in eax by ebx and store it in eax
     
-    ;in this case, we have total sum = 399 and char_value length = 47
-    ;this gives us approx. 8.48
+    ;in this case, we have total sum = 391 and char_value length = 47
+    ;this gives us approx. 8.31
     PRINT_DEC 1, eax ;which means we should get 8 here
+    ;PRINT_DEC 1, edx ;if we were to print out the remainder, it should be 15
     NEWLINE
     
     ret

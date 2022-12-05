@@ -106,8 +106,6 @@ searchCharacter:
     cmp al, 97 ;if current byte == 97 (ascii value for 'a')
     je incA
     
-    je incA
-    
     cmp al, 109 ;if current byte == 109 (ascii value for 'm')
     je incM
     
